@@ -6,11 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import curso.springboot.springboot.model.Pessoa;
+import curso.springboot.springboot.model.Telefone;
 
 @Repository
-public interface PessoaRepository extends CrudRepository<Pessoa, Long> {
+public interface TelefoneRepository extends CrudRepository<Telefone, Long> {
 
-	@Query("SELECT p FROM Pessoa p WHERE p.nome LIKE %?1% ")
-	public List<Pessoa> findPessoaByName(String nome);
+	@Query("SELECT t FROM Telefone t where t.pessoa.id = ?1")
+	public List<Telefone> getTelefones(Long pessoaid);
 }
