@@ -175,4 +175,9 @@ public class PessoaController {
 		
 		return modelAndView;
 	}
+	
+	@GetMapping("/login")
+	String login() {
+		return "login";
+	}
 }

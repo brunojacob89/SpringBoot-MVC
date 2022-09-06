@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -43,12 +43,14 @@
 					<input name="nome" th:field="*{nome}" id="nome" class="validate">
 				</div>
 			</div>
-			<div class="row">
+			<div class="row" >
 				<div class="input-field col s6">
 					<label for="sobrenome" class="active">Sobrenome</label>
 					<input name="sobrenome" th:field="*{sobrenome}" id="sobrenome" class="validate">
 				</div>
-				<div class="input-field col s6">
+				
+				<!--<div class="input-field col s6" sec:authorize="hasRole('ROLE_TECNICO', 'ROLE_')"> Para um usa hasRole -->
+				<div class="input-field col s6" sec:authorize="hasAnyRole('ROLE_TECNICO', 'ROLE_ADMIN')">
 					<label for="idade" class="active">Idade</label>
 					<input name="idade" th:field="*{idade}" id="idade" class="validate">
 				</div>
