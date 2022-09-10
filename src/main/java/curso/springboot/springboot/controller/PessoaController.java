@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,8 @@ public class PessoaController {
 	private PessoaRepository pessoaRepository;
 	@Autowired
 	private TelefoneRepository telefoneRepository;
+	@Autowired
+	private ReportUtil reportUtil;
 	
 	@GetMapping("/cadastropessoa")
 	public ModelAndView inicio() {
@@ -41,6 +45,8 @@ public class PessoaController {
 	
 	@PostMapping("**/salvarpessoa")
 	public ModelAndView salvar(@Valid Pessoa pessoa, BindingResult bindingResult) {
+		
+		pessoa.setTelefones(telefoneRepository.getTelefones(pessoa.getId()));
 		
 		if(bindingResult.hasErrors()) {
 			ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
@@ -102,14 +108,30 @@ public class PessoaController {
 	}
 	
 	@PostMapping("**/pesquisarpessoa")
-	public ModelAndView pesquisar(@RequestParam("nomepesquisa") String nomepesquisa) {
+	public ModelAndView pesquisar(@RequestParam("nomepesquisa") String nomepesquisa, 
+										@RequestParam("pesqsexo") String pesqsexo) {
+		
+		List<Pessoa> pessoas = new ArrayList<Pessoa>();
+		
+		if(pesqsexo != null && !pesqsexo.isEmpty()) {
+			pessoas = pessoaRepository.findPessoaByNameSexo(nomepesquisa, pesqsexo);
+		} else {
+			pessoas = pessoaRepository.findPessoaByName(nomepesquisa);
+		}
 		
 		ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
-		modelAndView.addObject("pessoas", pessoaRepository.findPessoaByName(nomepesquisa));
+		modelAndView.addObject("pessoas", pessoas);
 		modelAndView.addObject("pessoaobj", new Pessoa());
 		
 		return modelAndView;
 		
+	}
+	
+	@GetMapping("**/pesquisarpessoa")
+	public void imprimePDF(@RequestParam("nomepesquisa") String nomepesquisa, 
+										@RequestParam("pesqsexo") String pesqsexo,
+										HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("asdasad");
 	}
 	
 	@GetMapping("/telefones/{idpessoa}")
