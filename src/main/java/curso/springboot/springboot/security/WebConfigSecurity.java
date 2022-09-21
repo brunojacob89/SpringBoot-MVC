@@ -28,7 +28,9 @@ public class WebConfigSecurity {
 				)
 		.formLogin(form -> form
 				.loginPage("/login")
+				.defaultSuccessUrl("/cadastropessoa", true)
 				.permitAll()	//permite qualquer usuário
+				
 			)
 		.logout(logout -> logout //Mapeia URL de Logout e invalida usuário autenticado
 				.logoutUrl("/logout").logoutSuccessUrl("/")

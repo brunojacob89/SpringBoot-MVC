@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Home</title>
 
  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
  <link type="text/css" rel="stylesheet" href="/materialize/css/materialize.css"  media="screen,projection"/>
@@ -27,13 +27,26 @@
  		padding-left: 20px;
  		padding-right: 20px;
  	}
+ 	
+ 	table{
+ 		width: 100%;
+ 	}
+ 	
+ 	table td, table th{
+ 		border: 1px solid gray;
+ 	}
+ 	
+ 	table th{
+ 		background: #eee;
+ 	}
+ 	
  </style>
  
  
 </head>
 <body>
-	
-	<h3>Spring Boot + Thymeleaf + Material Design Lite</h3>
+	<h3>Cadastro de Pessoas</h3>
+	<h5>Spring Boot + Thymeleaf + Material Design Lite</h5>
 	</br>
 	<fieldset>
 	<legend>Cadatro de Pessoa</legend>
@@ -170,7 +183,8 @@
 				<div class="row">
 					<div class="input-field col s6">
 						<label for="nomepesquisa" class="active">Pesquisa por nome: </label>
-						<input name="nomepesquisa" id="nomepesquisa" class="validate">
+						<input name="nomepesquisa" id="nomepesquisa" class="validate"
+						th:value="${nomepesquisa}">
 					</div>
 					<div class="input-field col s6">
 						<label for="pesqsexo" class="active">Pesquisa Sexo</label>	
@@ -219,6 +233,20 @@
 			<td><a th:href="@{/removerpessoa/{idpessoa}(idpessoa=${pessoa.id})}">Excluir</a></td>
 		</tr>
 	</table>
+	
+	<div class="row" style="margin-top: 30px;">
+		<center>
+			<span th:if="${pessoas.hasPrevious()}">
+				<a th:href="@{/pessoaspag(page=${pessoas.number-1}, size=${pessoas.size}, nomepesquisa=${nomepesquisa})}">anterior</a>
+			</span>
+			<th:block th:each = "i : ${#numbers.sequence(0, pessoas.totalPages - 1)}">
+				<a th:href="@{/pessoaspag(page=${i}, size=${pessoas.size}, nomepesquisa=${nomepesquisa})}">[[ ${i} + 1  ]]</a>
+			</th:block>
+			<span th:if="${pessoas.hasNext()}">
+				<a th:href="@{/pessoaspag(page=${pessoas.number+1}, size=${pessoas.size}, nomepesquisa=${nomepesquisa})}">proximo</a>
+			</span>
+		</center>
+	</div>
 	
 <script type="text/javascript" src="materialize/js/materialize.js"></script>
 <script type="text/javascript" src="materialize/js/materialize.min.js"></script>

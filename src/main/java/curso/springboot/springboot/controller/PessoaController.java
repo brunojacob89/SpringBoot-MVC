@@ -59,11 +59,12 @@ public class PessoaController {
 	
 	@GetMapping("/pessoaspag")
 	public ModelAndView carregaPessoaPorPaginacao(@PageableDefault(size = 5) Pageable pageable
-			,ModelAndView model) {
+			,ModelAndView model, @RequestParam("nomepesquisa") String nomepesquisa) {
 		
-		Page<Pessoa> pagePessoa = pessoaRepository.findAll(pageable);
+		Page<Pessoa> pagePessoa = pessoaRepository.findPessoaByNamePage(nomepesquisa, pageable);
 		model.addObject("pessoas", pagePessoa);
 		model.addObject("pessoaobj", new Pessoa());
+		model.addObject("nomepesquisa", nomepesquisa);
 		model.setViewName("cadastro/cadastropessoa");
 		
 		return model;
@@ -134,6 +135,7 @@ public class PessoaController {
 
 		ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
 		modelAndView.addObject("pessoaobj", pessoa.get());
+		modelAndView.addObject("pessoas", pessoaRepository.findAll(PageRequest.of(0, 5, Sort.by("nome"))));
 		modelAndView.addObject("profissoes", profissaoRepository.findAll());
 
 		return modelAndView;
@@ -153,20 +155,24 @@ public class PessoaController {
 
 	@PostMapping("**/pesquisarpessoa")
 	public ModelAndView pesquisar(@RequestParam("nomepesquisa") String nomepesquisa,
-			@RequestParam("pesqsexo") String pesqsexo) {
+			@RequestParam("pesqsexo") String pesqsexo,
+			@PageableDefault(size = 5 , sort = {"nome"})Pageable pageable ) {
 
-		List<Pessoa> pessoas = new ArrayList<Pessoa>();
+		//List<Pessoa> pessoas = new ArrayList<Pessoa>();
+		Page<Pessoa> pessoas = null;
 
 		if (pesqsexo != null && !pesqsexo.isEmpty()) {
-			pessoas = pessoaRepository.findPessoaByNameSexo(nomepesquisa, pesqsexo);
+			//pessoas = pessoaRepository.findPessoaByNameSexo(nomepesquisa, pesqsexo);
+			pessoas = pessoaRepository.findPessoaByNameSexoPage(nomepesquisa, pesqsexo, pageable);
 		} else {
-			pessoas = pessoaRepository.findPessoaByName(nomepesquisa);
+			//pessoas = pessoaRepository.findPessoaByName(nomepesquisa);
+			pessoas = pessoaRepository.findPessoaByNamePage(nomepesquisa, pageable);
 		}
 
 		ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
 		modelAndView.addObject("pessoas", pessoas);
 		modelAndView.addObject("pessoaobj", new Pessoa());
-
+		modelAndView.addObject("nomepesquisa", nomepesquisa);
 		return modelAndView;
 
 	}
